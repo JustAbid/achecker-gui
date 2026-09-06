@@ -1,0 +1,14 @@
+Checking contract for [4mViolated-AC-Check[0m 
+------------------
+
+
+Checking contract for [4mMissing-AC-Check[0m 
+------------------
+(Non protected SELFDESTRUCT) Missing access control check in function kill()
+Needed to protect following instruction in function kill()
+( 245)  f5:	ff	-1 +0 = -1	SELFDESTRUCT
+
+(Controlable Target of DELEGATECALL) Missing access control check in function forward(address,bytes)
+Needed to protect following instruction in function forward(address,bytes)
+( 512)  200:	f4	-6 +1 = -5	DELEGATECALL
+

@@ -24,6 +24,9 @@ ENV/
 .DS_Store
 *.swp
 
+# Local config
+.env
+
 # Logs
 *.log
 

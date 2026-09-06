@@ -499,9 +499,11 @@ class InternalRecover(object):
                 for start in starts:
                     find_exits(start, insn.parent_block)
 
-                print(f"Inline function identified between {writer.offset:#x} {writer} and {insn.offset:#x} {insn}")
-                print(list([f"{x.offset:#x}" for x in blocks]))
-                print("\n\n")
+                # [achecker-gui] silenced stray debug prints
+                # print(f"Inline function identified between {writer.offset:#x} {writer} and {insn.offset:#x} {insn}")
+                # print(list([f"{x.offset:#x}" for x in blocks]))
+                # print("\n\n")
+                pass
 
     def optimize(self) -> None:
         logger.debug(f"Running optimizer!")
@@ -723,7 +725,8 @@ class InternalRecover(object):
 
                 next_block = block.fallthrough_edge
                 if next_block is None:
-                    print("Trying to remove block with None fallthrough! {}".format(block))
+                    # [achecker-gui] silenced stray debug print
+                    # print("Trying to remove block with None fallthrough! {}".format(block))
                     continue
 
                 for prev_block in block.in_edges:

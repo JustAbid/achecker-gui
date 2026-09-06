@@ -192,7 +192,8 @@ class Project(object):
                             start_byte=exp_ins.arguments[1].concrete_value/8+1                                                    
                     else:
                         start_byte='whole'
-                        print('error, check resolve_slot_offset')                    
+                        # [achecker-gui] silenced stray debug print
+                        # print('error, check resolve_slot_offset')
             else:
                 start_byte='whole'                                            
         elif sstore:                        
@@ -251,8 +252,10 @@ class Project(object):
                         start_byte='whole' #overapproximate the whole slot                                     
             
             if not start_byte:
-                print(sstore_ins)                
-                print(masking_pattern)            
+                # [achecker-gui] silenced stray debug prints
+                # print(sstore_ins)
+                # print(masking_pattern)
+                pass
         return start_byte
 
     def resolve_access_control_slots(self, ssa, instructions, ac_check_ins, args=None, memory_info=None, restricted=True):        
@@ -267,9 +270,10 @@ class Project(object):
         if args:                            
             for jump_ins in instructions:                
                 for bs in interesting_slices(jump_ins, args, reachable=True, restricted=False):
-                    if('%x' %jump_ins.addr) == '2f9':                    
-                        print(jump_ins)                        
-                        print(bs)
+                    # [achecker-gui] silenced leftover debug block (was gated on a hardcoded address)
+                    # if('%x' %jump_ins.addr) == '2f9':
+                    #     print(jump_ins)
+                    #     print(bs)
                     cur_jump_sloads= [v['sload'] for k in access_sloads if k==jump_ins for v in access_sloads[k]]
                     if len(cur_jump_sloads)!=0 and any(ins in cur_jump_sloads for ins in bs if ins.name in frozenset(['SLOAD'])): 
                         slices.append(bs+(jump_ins,))                                                                        

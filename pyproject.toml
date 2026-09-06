@@ -1,0 +1,13 @@
+[tool.ruff]
+target-version = "py38"
+line-length = 100
+# The vendored analysis engine is upstream code; lint only our own package.
+extend-exclude = ["src", "bin"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

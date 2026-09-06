@@ -1,7 +1,8 @@
 # Changelog
 
 Notable changes to the web interface and repo setup. The bundled AChecker engine
-(`bin/`, `src/`) is upstream code and is left as-is.
+(`bin/`, `src/`) is upstream code; the only edits there disable stray debug
+`print()` statements, the analysis logic is untouched.
 
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
@@ -9,6 +10,23 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
+- **Structured results.** AChecker's console output is parsed into findings —
+  vulnerability type, affected function, a severity badge, the offending EVM
+  instruction, and a plain-English description — shown as cards with a summary
+  banner ("2 access-control issues found") instead of a raw text dump.
+- **Useful history.** Each analysis stores its full result. The history page
+  shows a clean / N-issues badge per row, rows link to the saved report, and a
+  report can be downloaded as JSON or Markdown. Old rows are marked "legacy".
+- **"Try a sample" buttons** on the home page for the bundled example contracts.
+- **Test suite** (`tests/`, `pytest`) covering the output parser, the routes
+  (with a stubbed engine), the Markdown export, and the MongoDB-down fallbacks.
+- **CI**: GitHub Actions runs `ruff` + `pytest` on Python 3.8 and 3.11.
+- **Docker**: `Dockerfile` + `docker-compose.yml` bring up the app, MongoDB, and
+  a solc build with one command.
+- `requirements-web.txt` / `requirements-dev.txt` so the web layer can be
+  installed without the heavy analysis-engine dependencies.
+- `.env` support (`python-dotenv`) and `.env.example`; `pyproject.toml` for ruff
+  and pytest config.
 - This changelog.
 - `templates/base.html` as a shared layout so `index.html` and `uploads.html`
   stop repeating the same head/header markup.
@@ -24,6 +42,14 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
+- The web app is now an `achecker_gui/` package with an application factory
+  (`create_app()`), a blueprint, and separate modules for the parser
+  (`report.py`), the engine call (`analysis.py`), and history (`store.py`).
+  `app.py` is a thin entry point; production runs under gunicorn.
+- `/view-uploads` is now `/history` (the old path redirects).
+- Silenced leftover debug `print()` calls in the vendored engine
+  (`src/project.py`, `src/cfg/rattle/`) that were dumping raw instruction lists
+  onto stdout for some contracts. The analysis logic is unchanged.
 - Moved the sample `.code` files from `uploads/` to `samples/`. `uploads/` is now
   only used at runtime.
 - `app.py` builds the results from a data structure rendered by Jinja instead of

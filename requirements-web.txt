@@ -1,0 +1,6 @@
+# Web interface only (no analysis engine). Used by the Docker image and by CI.
+Flask>=1.1.1
+pymongo>=4.0
+pytz
+python-dotenv
+gunicorn

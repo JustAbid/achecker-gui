@@ -1,4 +1,7 @@
-# AChecker analysis engine
+# Full install: analysis engine + web interface.
+# For just the web layer (tests / CI) use requirements-dev.txt.
+
+# Analysis engine
 pysha3>=1.0.2
 z3-solver>=4.8.5.0
 ijson
@@ -15,8 +18,6 @@ pandas
 tabulate
 
 # Web interface
-Flask>=1.1.1
-pymongo>=4.0
-pytz
+-r requirements-web.txt
 
 -e .

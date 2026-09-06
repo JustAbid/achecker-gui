@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{{ result.filename }} &middot; AChecker{% endblock %}
+
+{% block content %}
+    <h2 class="page-title">
+        {{ result.filename }}
+        <span class="page-title-sub">analysed {{ result.upload_time }}</span>
+    </h2>
+
+    <p class="report-actions">
+        <a href="{{ url_for('main.history') }}">&larr; back to history</a>
+        &middot;
+        <a href="{{ url_for('main.download_report', analysis_id=result._id, fmt='json') }}">download JSON</a>
+        &middot;
+        <a href="{{ url_for('main.download_report', analysis_id=result._id, fmt='md') }}">download Markdown</a>
+    </p>
+
+    <div id="output-box">
+        <div id="results">{% include "_results.html" %}</div>
+    </div>
+{% endblock %}

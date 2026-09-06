@@ -1,0 +1,9 @@
+Checking contract for [4mViolated-AC-Check[0m 
+------------------
+(  761)  2f9:	57	-2 +0 = -2	JUMPI
+((    0)    0:	63	-0 +1 = 1	PUSH4(3735929054) 	deadc0de, (  558)  22e:	60	-0 +1 = 1	PUSH1(64) 	40)
+(  761)  2f9:	57	-2 +0 = -2	JUMPI
+
+
+Checking contract for [4mMissing-AC-Check[0m 
+------------------

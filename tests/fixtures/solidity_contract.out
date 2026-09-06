@@ -1,0 +1,13 @@
+Contract Wallet:
+------------------
+
+Checking contract for [4mViolated-AC-Check[0m 
+------------------
+
+Violated access control check in function setOwner(address)
+	( 900)  384:	57	-2 +0 = -2	JUMPI
++--(Potentially Intended Behavior) Attacker can make changes to AC item {1} in function init()
+
+
+Checking contract for [4mMissing-AC-Check[0m 
+------------------

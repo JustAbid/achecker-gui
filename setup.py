@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="AChecker",
@@ -8,7 +8,9 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/JustAbid/achecker-gui",
     license="MIT",
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests", "tests.*"]),
+    include_package_data=True,
+    package_data={"achecker_gui": ["templates/*.html", "static/css/*.css", "static/js/*.js"]},
     scripts=["bin/achecker.py"],
     python_requires=">=3.8",
     classifiers=[

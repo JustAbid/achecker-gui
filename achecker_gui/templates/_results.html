@@ -1,0 +1,61 @@
+{# Renders an analysis result. `result` is the dict from Report.to_dict()
+   (optionally with `filename` / `analysis_id`), or {"error": "..."} , or None. #}
+{% if result %}
+    {% if result.error %}
+        <p class="results-error">{{ result.error }}</p>
+    {% else %}
+        <div class="summary summary--{{ 'clean' if result.is_clean else 'issues' }}">
+            <span class="summary-icon" aria-hidden="true">{{ '✓' if result.is_clean else '!' }}</span>
+            <div>
+                <p class="summary-text">{{ result.summary }}</p>
+                {% if result.filename %}
+                    <p class="summary-sub">
+                        {{ result.filename }}{% if result.contract %} &middot; contract <code>{{ result.contract }}</code>{% endif %}
+                        {% if result.analysis_id %} &middot; <a href="{{ url_for('main.history_detail', analysis_id=result.analysis_id) }}">permalink</a>{% endif %}
+                    </p>
+                {% elif result.contract %}
+                    <p class="summary-sub">contract <code>{{ result.contract }}</code></p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% for finding in result.findings %}
+            <article class="finding finding--{{ finding.severity }}">
+                <header class="finding-head">
+                    <span class="badge badge--{{ finding.severity }}">{{ finding.severity }}</span>
+                    <span class="finding-kind">{{ finding.kind }}</span>
+                    {% if finding.intended_behavior %}
+                        <span class="badge badge--note">possibly intended</span>
+                    {% endif %}
+                </header>
+                <p class="finding-fn">in function <code>{{ finding.function }}</code></p>
+                <p class="finding-desc">{{ finding.description }}</p>
+                {% if finding.instruction %}
+                    <pre class="finding-instr">{{ finding.instruction }}</pre>
+                {% endif %}
+                {% if finding.notes %}
+                    <ul class="finding-notes">
+                        {% for note in finding.notes %}<li>{{ note }}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+            </article>
+        {% endfor %}
+
+        {% for block in result.unparsed %}
+            <article class="finding finding--raw">
+                <header class="finding-head">
+                    <span class="badge badge--note">unparsed</span>
+                    <span class="finding-kind">{{ block.title }}</span>
+                </header>
+                <pre class="finding-instr">{{ block.text }}</pre>
+            </article>
+        {% endfor %}
+
+        {% if result.raw_output %}
+            <details class="raw-output">
+                <summary>Raw AChecker output</summary>
+                <pre>{{ result.raw_output }}</pre>
+            </details>
+        {% endif %}
+    {% endif %}
+{% endif %}

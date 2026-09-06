@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis History{% endblock %}
+
+{% block content %}
+    <h2 class="page-title">Analysis History</h2>
+
+    {% if not_found %}
+        <p class="results-error">That analysis was not found.</p>
+    {% endif %}
+
+    {% if entries is none %}
+        <p class="results-error">MongoDB is not reachable &mdash; history is unavailable.</p>
+    {% elif not entries %}
+        <p class="results-empty">Nothing analysed yet.</p>
+    {% else %}
+        <table class="file-table">
+            <thead>
+                <tr>
+                    <th>File</th>
+                    <th>Result</th>
+                    <th>Time (Berlin)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                    <tr onclick="window.location='{{ url_for('main.history_detail', analysis_id=entry._id) }}'">
+                        <td><a href="{{ url_for('main.history_detail', analysis_id=entry._id) }}">{{ entry.filename }}</a></td>
+                        <td>
+                            {% if 'is_clean' not in entry %}
+                                <span class="badge badge--note">legacy</span>
+                            {% elif entry.is_clean %}
+                                <span class="badge badge--clean">clean</span>
+                            {% else %}
+                                <span class="badge badge--issues">{{ entry.issue_count }} issue{{ '' if entry.issue_count == 1 else 's' }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ entry.upload_time }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

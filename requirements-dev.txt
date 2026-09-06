@@ -1,0 +1,8 @@
+# Linting + testing the web layer. Does NOT pull in the heavy analysis-engine
+# dependencies (z3, pysha3, Cython, ...), so CI stays fast.
+-r requirements-web.txt
+-e .
+
+pytest
+ruff
+mongomock

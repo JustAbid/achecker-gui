@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}AChecker GUI{% endblock %}
+
+{% block content %}
+    <form id="upload-form" action="{{ url_for('main.upload') }}" method="post" enctype="multipart/form-data">
+        <div class="buttons">
+            <span class="comic-button upload-button">
+                Upload
+                <input type="file" name="file" id="file-input">
+            </span>
+            <button type="submit" id="analyze-button" class="comic-button">Analyze</button>
+        </div>
+        <p id="file-name" class="file-name"></p>
+    </form>
+
+    {% if samples %}
+        <div class="samples">
+            <span class="samples-label">or try a sample:</span>
+            {% for sample in samples %}
+                <form class="sample-form" action="{{ url_for('main.upload') }}" method="post">
+                    <input type="hidden" name="sample" value="{{ sample }}">
+                    <button type="submit" class="sample-button">{{ sample }}</button>
+                </form>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div id="output-box">
+        <h2>Results</h2>
+        <div id="results">
+            {% if not result %}<p class="results-hint">Upload a contract or pick a sample to run the analysis.</p>{% endif %}
+            {% include "_results.html" %}
+        </div>
+        <div id="loader" class="loader" hidden></div>
+    </div>
+{% endblock %}

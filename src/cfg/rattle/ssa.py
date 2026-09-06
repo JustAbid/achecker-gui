@@ -498,7 +498,8 @@ class SSABasicBlock(object):
         invalid_insn = SSAInstruction(insn, new_block)
         new_block.insns.append(invalid_insn)
 
-        print("INVALID JUMPDEST: {}".format(new_block))
+        # [achecker-gui] silenced stray debug print
+        # print("INVALID JUMPDEST: {}".format(new_block))
 
         return new_block
 
