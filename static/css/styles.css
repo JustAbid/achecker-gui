@@ -1,16 +1,31 @@
-/* Basic styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    transition: background-color 0.3s, color 0.3s;
-    text-align: center;
+/* ---------- Base ---------- */
+* {
+    box-sizing: border-box;
 }
 
-/* Light mode styles */
-body.light-mode {
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0 0 40px;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Theme classes live on <html> so the bootstrap script can set them before paint. */
+.light-mode {
     background-color: #F1FAEE;
+}
+
+.light-mode body {
     color: #1D3557;
+}
+
+.dark-mode {
+    background-color: #110E1B;
+}
+
+.dark-mode body {
+    color: #e0e0e0;
 }
 
 header {
@@ -25,14 +40,25 @@ h1 {
     color: #E63946;
 }
 
-.theme-switch img {
+/* ---------- Theme toggle ---------- */
+.theme-toggle {
+    background: none;
+    border: none;
+    padding: 4px;
     cursor: pointer;
+    color: inherit;
+    line-height: 0;
 }
 
+.theme-toggle:hover {
+    color: #E63946;
+}
+
+/* ---------- Buttons ---------- */
 .buttons {
     display: flex;
     justify-content: center;
-    margin: 20px 0;
+    margin: 20px 0 6px;
 }
 
 .comic-button {
@@ -40,6 +66,7 @@ h1 {
     padding: 10px 20px;
     font-size: 24px;
     font-weight: bold;
+    font-family: inherit;
     text-align: center;
     text-decoration: none;
     color: #fff;
@@ -65,18 +92,60 @@ h1 {
     transform: translateY(4px);
 }
 
+.file-name {
+    min-height: 1.2em;
+    margin: 0 0 10px;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+/* ---------- Results panel ---------- */
 #output-box {
-    margin-top: 20px;
+    margin: 20px 15px 0;
     padding: 20px;
+    min-height: 320px;
     border: 1px solid #ccc;
     border-radius: 25px;
     background-color: #F4E99A;
-    margin-left: 15px;
-    margin-right: 15px;
-    padding-bottom: 250px;
 }
 
-/* New styles for view button and file list */
+#results {
+    text-align: left;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+#results h3 {
+    margin-bottom: 4px;
+}
+
+#results pre {
+    text-align: left;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+}
+
+.results-error {
+    color: #b00020;
+    font-weight: bold;
+}
+
+.results-empty {
+    opacity: 0.75;
+    font-style: italic;
+}
+
+.dark-mode #output-box {
+    background-color: #7C162E;
+    border: 1px solid #555;
+}
+
+.dark-mode .results-error {
+    color: #ff8a80;
+}
+
+/* ---------- View uploads / history ---------- */
 .view-uploads {
     margin-top: 20px;
 }
@@ -106,7 +175,8 @@ h1 {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.file-table th, .file-table td {
+.file-table th,
+.file-table td {
     padding: 12px;
     border: 1px solid #ddd;
 }
@@ -129,80 +199,69 @@ h1 {
     margin-top: 20px;
 }
 
-/* Dark mode styles */
-body.dark-mode {
-    background-color: #110E1B;
+.dark-mode .file-table {
+    background-color: #303030;
     color: #e0e0e0;
+    border: 1px solid #444;
 }
 
-body.dark-mode h1 {
-    color: #E63946;
+.dark-mode .file-table th {
+    background-color: #444;
 }
 
-body.dark-mode #output-box {
-    background-color: #7C162E;
-    border: 1px solid #555;
+.dark-mode .file-table td {
+    border-color: #444;
 }
 
-body.dark-mode .comic-button {
+.dark-mode .file-table tbody tr:nth-child(even) {
+    background-color: #383838;
+}
+
+.dark-mode .file-table tbody tr:hover {
+    background-color: #444;
+}
+
+.dark-mode .comic-button {
     background-color: #007bff;
     border: 2px solid #fff;
     box-shadow: 5px 5px 0px #fff;
 }
 
-body.dark-mode .comic-button:hover {
+.dark-mode .comic-button:hover {
     background-color: #fff;
     color: #007bff;
     border: 2px solid #007bff;
     box-shadow: 5px 5px 0px #007bff;
 }
 
-body.dark-mode .comic-button:active {
+.dark-mode .comic-button:active {
     background-color: #fcf414;
     box-shadow: none;
     transform: translateY(4px);
 }
 
-body.dark-mode .view-button {
+.dark-mode .view-button {
     background-color: #34A853;
     border: 2px solid #1B5E20;
     box-shadow: 5px 5px 0px #1B5E20;
 }
 
-body.dark-mode .view-button:hover {
+.dark-mode .view-button:hover {
     background-color: #fff;
     color: #34A853;
     border: 2px solid #34A853;
     box-shadow: 5px 5px 0px #34A853;
 }
 
-body.dark-mode .file-table {
-    background-color: #303030;
-    color: #e0e0e0;
-    border: 1px solid #444;
-}
-
-body.dark-mode .file-table th {
-    background-color: #444;
-}
-
-body.dark-mode .file-table tbody tr:nth-child(even) {
-    background-color: #383838;
-}
-
-body.dark-mode .file-table tbody tr:hover {
-    background-color: #444;
-}
-
-/* Loader styles */
+/* ---------- Loader ---------- */
 .loader {
     width: 48px;
     height: 48px;
-    margin: auto;
+    margin: 40px auto 0;
     position: relative;
 }
 
-.loader:before {
+.loader::before {
     content: '';
     width: 48px;
     height: 5px;
@@ -211,10 +270,10 @@ body.dark-mode .file-table tbody tr:hover {
     top: 60px;
     left: 0;
     border-radius: 50%;
-    animation: shadow324 0.5s linear infinite;
+    animation: loader-shadow 0.5s linear infinite;
 }
 
-.loader:after {
+.loader::after {
     content: '';
     width: 100%;
     height: 100%;
@@ -223,33 +282,29 @@ body.dark-mode .file-table tbody tr:hover {
     top: 0;
     left: 0;
     border-radius: 4px;
-    animation: jump7456 0.5s linear infinite;
+    animation: loader-jump 0.5s linear infinite;
 }
 
-@keyframes jump7456 {
+@keyframes loader-jump {
     15% {
         border-bottom-right-radius: 3px;
     }
-
     25% {
         transform: translateY(9px) rotate(22.5deg);
     }
-
     50% {
-        transform: translateY(18px) scale(1, .9) rotate(45deg);
+        transform: translateY(18px) scale(1, 0.9) rotate(45deg);
         border-bottom-right-radius: 40px;
     }
-
     75% {
         transform: translateY(9px) rotate(67.5deg);
     }
-
     100% {
         transform: translateY(0) rotate(90deg);
     }
 }
 
-@keyframes shadow324 {
+@keyframes loader-shadow {
     0%, 100% {
         transform: scale(1, 1);
     }

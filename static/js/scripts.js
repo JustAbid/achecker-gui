@@ -1,46 +1,85 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const toggleButton = document.getElementById('theme-toggle');
-    const body = document.body;
+document.addEventListener('DOMContentLoaded', function () {
+    setupThemeToggle();
+    setupUploadForm();
+});
 
-    // saved mode in local storage
-    const savedMode = localStorage.getItem('mode');
-    if (savedMode) {
-        body.classList.remove('light-mode', 'dark-mode');
-        body.classList.add(savedMode);
-        toggleButton.src = savedMode === 'dark-mode' ? "https://img.icons8.com/fluency/48/moon-symbol.png" : "https://img.icons8.com/fluency/48/moon-symbol.png";
+function setupThemeToggle() {
+    var toggle = document.getElementById('theme-toggle');
+    if (!toggle) {
+        return;
     }
 
-    toggleButton.addEventListener('click', function() {
-        if (body.classList.contains('light-mode')) {
-            body.classList.remove('light-mode');
-            body.classList.add('dark-mode');
-            localStorage.setItem('mode', 'dark-mode');
-            toggleButton.src = "https://img.icons8.com/fluency/48/moon-symbol.png";  
-        } else {
-            body.classList.remove('dark-mode');
-            body.classList.add('light-mode');
-            localStorage.setItem('mode', 'light-mode');
-            toggleButton.src = "https://img.icons8.com/fluency/48/moon-symbol.png";  
+    var root = document.documentElement;
+    var moon = toggle.querySelector('.icon-moon');
+    var sun = toggle.querySelector('.icon-sun');
+
+    function apply(mode) {
+        root.className = mode;
+        var dark = mode === 'dark-mode';
+        if (moon) { moon.hidden = dark; }
+        if (sun) { sun.hidden = !dark; }
+    }
+
+    apply(root.className === 'dark-mode' ? 'dark-mode' : 'light-mode');
+
+    toggle.addEventListener('click', function () {
+        var next = root.className === 'dark-mode' ? 'light-mode' : 'dark-mode';
+        apply(next);
+        try {
+            localStorage.setItem('mode', next);
+        } catch (e) {}
+    });
+}
+
+function setupUploadForm() {
+    var form = document.getElementById('upload-form');
+    if (!form) {
+        return;
+    }
+
+    var fileInput = document.getElementById('file-input');
+    var chooseButton = document.getElementById('choose-button');
+    var fileName = document.getElementById('file-name');
+    var loader = document.getElementById('loader');
+    var results = document.getElementById('results');
+
+    if (chooseButton && fileInput) {
+        chooseButton.addEventListener('click', function () {
+            fileInput.click();
+        });
+        fileInput.addEventListener('change', function () {
+            if (fileName) {
+                fileName.textContent = fileInput.files.length ? fileInput.files[0].name : '';
+            }
+        });
+    }
+
+    form.addEventListener('submit', function (event) {
+        // No file: let the normal form POST through so the server renders the error.
+        if (!fileInput || !fileInput.files.length) {
+            return;
         }
 
-        
+        event.preventDefault();
+        loader.hidden = false;
+        results.innerHTML = '';
+
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'X-Requested-With': 'fetch' }
+        })
+            .then(function (response) {
+                return response.text();
+            })
+            .then(function (html) {
+                results.innerHTML = html;
+            })
+            .catch(function () {
+                results.innerHTML = '<p class="results-error">Request failed. Is the server running?</p>';
+            })
+            .then(function () {
+                loader.hidden = true;
+            });
     });
-    const uploadForm = document.getElementById('upload-form');
-    const loader = document.getElementById('loader');
-    const results = document.getElementById('results');
-
-    uploadForm.addEventListener('submit', function() {
-        loader.style.display = 'block';
-        results.textContent = '';
-    });
-
-    const analyzeButton = document.getElementById('analyze-button');
-    analyzeButton.addEventListener('click', function() {
-        loader.style.display = 'block';
-        results.textContent = '';
-        setTimeout(() => { loader.style.display = 'none'; }, 15000); //timeout for loader
-    });
-
-
-
-});
+}

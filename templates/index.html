@@ -1,36 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AChecker</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-</head>
-<body class="light-mode">
-    <header>
-        <h1>AChecker</h1>
-        <div class="theme-switch">
-            <img id="theme-toggle" src="https://img.icons8.com/fluency/48/moon-symbol.png" alt="Toggle Theme">
+{% extends "base.html" %}
+
+{% block title %}AChecker GUI{% endblock %}
+
+{% block content %}
+    <form id="upload-form" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+        <div class="buttons">
+            <input type="file" name="file" id="file-input" hidden>
+            <button type="button" id="choose-button" class="comic-button">Upload</button>
+            <button type="submit" id="analyze-button" class="comic-button">Analyze</button>
         </div>
-    </header>
-    <main>
-        <form id="upload-form"  action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
-            <div class="buttons">
-                <input type="file" name="file" id="file-input" style="display: none;">
-                <button type="button" class="comic-button" onclick="document.getElementById('file-input').click();">Upload</button>
-                <button type="submit" id="analyze-button" class="comic-button">Analyze</button>
-            </div>
-        </form>
-        <div id="output-box">
-            <h2>Results:</h2>
-            <div id="results">{{ output|safe }}</div>
-            <div id="loader" class="loader"  style="display: none;"></div>
-        </div>
-        <!-- New button to view uploaded files -->
-        <div class="view-uploads">
-            <button onclick="window.location.href='{{ url_for('view_uploads') }}'" class="comic-button view-button">View Uploaded Files</button>
-        </div>
-    </main>
-    <script src="/static/js/scripts.js"></script>
-</body>
-</html>
+        <p id="file-name" class="file-name"></p>
+    </form>
+
+    <div id="output-box">
+        <h2>Results:</h2>
+        <div id="results">{% include "_results.html" %}</div>
+        <div id="loader" class="loader" hidden></div>
+    </div>
+
+    <div class="view-uploads">
+        <a href="{{ url_for('view_uploads') }}" class="comic-button view-button">View Uploaded Files</a>
+    </div>
+{% endblock %}
