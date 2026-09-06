@@ -4,9 +4,10 @@ import os
 import re
 import sys
 import subprocess
-from datetime import datetime, timezone
+from datetime import datetime
 
-from flask import Flask, render_template, request
+import pytz
+from flask import Flask, render_template, request, url_for
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 from werkzeug.utils import secure_filename
@@ -18,6 +19,7 @@ ACHECKER_SCRIPT = os.path.join(BASE_DIR, "bin", "achecker.py")
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
 ANALYSIS_TIMEOUT = int(os.environ.get("ACHECKER_TIMEOUT", "300"))  # seconds
 MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB
+TZ = pytz.timezone(os.environ.get("ACHECKER_TZ", "Europe/Berlin"))
 
 app = Flask(__name__)
 app.jinja_env.trim_blocks = True
@@ -25,9 +27,29 @@ app.jinja_env.lstrip_blocks = True
 app.secret_key = os.environ.get("SECRET_KEY", "dev-only-not-secret")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_BYTES
-app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0  # don't let the browser cache css/js
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+
+@app.after_request
+def no_store(response):
+    # keep the browser from serving a stale page (e.g. old history after an analysis)
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+@app.context_processor
+def asset_helpers():
+    # append the file's mtime to static URLs so a changed css/js is never cached
+    def static_url(filename):
+        try:
+            version = int(os.path.getmtime(os.path.join(app.static_folder, filename)))
+        except OSError:
+            version = 0
+        return url_for("static", filename=filename, v=version)
+
+    return {"static_url": static_url}
+
 
 # Mongo is optional. If it's down we just skip the history bit.
 _mongo = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
@@ -61,10 +83,13 @@ def upload_file():
 @app.route("/view-uploads")
 def view_uploads():
     try:
-        files = list(_collection.find().sort("upload_time", -1))
+        # sort by _id: it's time-ordered, so this stays correct regardless of
+        # how the upload_time string is formatted
+        files = list(_collection.find().sort("_id", -1))
+        db_error = False
     except PyMongoError:
-        files = []
-    return render_template("uploads.html", files=files, db_error=_db_unavailable())
+        files, db_error = [], True
+    return render_template("uploads.html", files=files, db_error=db_error)
 
 
 def run_achecker(file_path):
@@ -108,19 +133,11 @@ def _record_upload(filename):
         _collection.insert_one(
             {
                 "filename": filename,
-                "upload_time": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+                "upload_time": datetime.now(TZ).strftime("%Y-%m-%d %I:%M:%S %p"),
             }
         )
-    except PyMongoError:
-        pass
-
-
-def _db_unavailable():
-    try:
-        _mongo.admin.command("ping")
-        return False
-    except PyMongoError:
-        return True
+    except PyMongoError as exc:
+        app.logger.warning("could not save upload history (is MongoDB running?): %s", exc)
 
 
 def _respond(result, status=200):

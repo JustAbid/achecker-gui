@@ -95,6 +95,23 @@ h1 {
     transform: translateY(4px);
 }
 
+/* The real file input sits invisibly on top of the "Upload" button so clicking
+   it opens the native picker directly (no label or JS, and double-click works). */
+.upload-button {
+    position: relative;
+}
+
+.upload-button input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 0;
+}
+
 .file-name {
     min-height: 1.2em;
     margin: 0 0 10px;

@@ -50,10 +50,11 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Start MongoDB before running the web app, e.g.:
+Start MongoDB before running the web app if it isn't already running. The
+service is called `mongodb` or `mongod` depending on how it was installed:
 
 ```bash
-sudo systemctl start mongod
+sudo systemctl start mongodb   # or: sudo systemctl start mongod
 ```
 
 ## Usage
@@ -89,6 +90,7 @@ The web app reads a few optional environment variables:
 | `FLASK_DEBUG` | off | set to `1` for the debug server |
 | `MONGO_URI` | `mongodb://localhost:27017/` | MongoDB connection string |
 | `ACHECKER_TIMEOUT` | `300` | analysis time limit in seconds |
+| `ACHECKER_TZ` | `Europe/Berlin` | timezone for history timestamps |
 
 If MongoDB isn't running the analysis still works, you just don't get history.
 

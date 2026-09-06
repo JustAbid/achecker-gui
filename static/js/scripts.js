@@ -46,6 +46,20 @@ function setupUploadForm() {
         fileInput.addEventListener('change', function () {
             fileName.textContent = fileInput.files.length ? fileInput.files[0].name : '';
         });
+
+        // On some Linux setups a fast double-click in the file dialog sends a
+        // stray click back to the page as it closes, which reopens the picker
+        // and can drop the selection. Ignore clicks right after the window
+        // regains focus (i.e. just after the dialog closed).
+        var refocusedAt = 0;
+        window.addEventListener('focus', function () {
+            refocusedAt = Date.now();
+        });
+        fileInput.addEventListener('click', function (event) {
+            if (Date.now() - refocusedAt < 500) {
+                event.preventDefault();
+            }
+        });
     }
 
     form.addEventListener('submit', function (event) {

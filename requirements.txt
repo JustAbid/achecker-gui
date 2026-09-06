@@ -17,5 +17,6 @@ tabulate
 # Web interface
 Flask>=1.1.1
 pymongo>=4.0
+pytz
 
 -e .
