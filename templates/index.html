@@ -6,7 +6,7 @@
     <form id="upload-form" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
         <div class="buttons">
             <input type="file" name="file" id="file-input" hidden>
-            <button type="button" id="choose-button" class="comic-button">Upload</button>
+            <label for="file-input" class="comic-button">Upload</label>
             <button type="submit" id="analyze-button" class="comic-button">Analyze</button>
         </div>
         <p id="file-name" class="file-name"></p>

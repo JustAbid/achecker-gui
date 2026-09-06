@@ -38,19 +38,13 @@ function setupUploadForm() {
     }
 
     var fileInput = document.getElementById('file-input');
-    var chooseButton = document.getElementById('choose-button');
     var fileName = document.getElementById('file-name');
     var loader = document.getElementById('loader');
     var results = document.getElementById('results');
 
-    if (chooseButton && fileInput) {
-        chooseButton.addEventListener('click', function () {
-            fileInput.click();
-        });
+    if (fileInput && fileName) {
         fileInput.addEventListener('change', function () {
-            if (fileName) {
-                fileName.textContent = fileInput.files.length ? fileInput.files[0].name : '';
-            }
+            fileName.textContent = fileInput.files.length ? fileInput.files[0].name : '';
         });
     }
 

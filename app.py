@@ -25,6 +25,7 @@ app.jinja_env.lstrip_blocks = True
 app.secret_key = os.environ.get("SECRET_KEY", "dev-only-not-secret")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_BYTES
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0  # don't let the browser cache css/js
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 

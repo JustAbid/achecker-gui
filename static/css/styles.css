@@ -58,6 +58,7 @@ h1 {
 .buttons {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin: 20px 0 6px;
 }
 
@@ -77,6 +78,8 @@ h1 {
     transition: all 0.3s ease;
     cursor: pointer;
     margin: 0 10px;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .comic-button:hover {

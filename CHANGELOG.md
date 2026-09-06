@@ -31,6 +31,10 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 - Theme class is set on `<html>` by a tiny inline script before paint, so dark
   mode doesn't flash white on load.
 - Results text is left-aligned. Dropped the fixed 250px bottom padding.
+- The "Upload" control is a `<label>` for the file input instead of a button that
+  needed JS to open the picker.
+- Static files are served with `max-age=0` so edited CSS/JS show up on a normal
+  refresh during development.
 - Bigger `.gitignore`.
 
 ### Fixed
@@ -41,6 +45,9 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 - Loading animation didn't really work. The form did a full page POST and a
   15-second timeout hid the loader. It now submits with `fetch()` and updates the
   results panel in place.
+- Clicking "Upload" did nothing unless `scripts.js` loaded, so if the browser had
+  an old copy cached you couldn't pick a file and Analyze reported "no file
+  selected". The `<label>` opens the picker without any JS.
 - Upload errors redirected to `/upload`, which is POST only, so you got a 405.
   They go back to the home page with a message now.
 - Uploaded file names are cleaned with `secure_filename()` (was a path traversal
